@@ -1,5 +1,9 @@
 package dev.patika.schoolmanagementsystem.business;
 
+import dev.patika.schoolmanagementsystem.business.dtos.InstructorSalaryLogDto;
+
+import java.util.List;
+
 public interface VisitingResearcherService {
 
     /**
@@ -9,5 +13,7 @@ public interface VisitingResearcherService {
      * @param percent increase/decrease percentage.
      */
     void updateHourlySalary(Long id, double percent);
+
+    List<InstructorSalaryLogDto> findAllSalaryLogsById(Long id);
 
 }
