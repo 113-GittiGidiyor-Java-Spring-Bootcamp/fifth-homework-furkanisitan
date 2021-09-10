@@ -10,59 +10,100 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @Mapper
-public interface InstructorMapper {
+public abstract class InstructorMapper {
 
-    InstructorMapper INSTANCE = Mappers.getMapper(InstructorMapper.class);
+    public static InstructorMapper INSTANCE = Mappers.getMapper(InstructorMapper.class);
 
-    @IterableMapping(qualifiedByName = "toInstructorDto")
-    List<InstructorDto> toInstructorDtoList(List<? extends Instructor> instructors);
+    @IterableMapping(qualifiedByName = "toDto")
+    public abstract List<InstructorDto> toDtoList(List<? extends Instructor> instructors);
 
-    InstructorDto instructorToInstructorDto(Instructor instructor);
+    //region toDto
+    private Map<Class<?>, Function<Instructor, InstructorDto>> toDtoMap = new HashMap<Class<?>, Function<Instructor, InstructorDto>>() {{
+        put(PermanentInstructor.class, (instructor) -> _toDto((PermanentInstructor) instructor));
+        put(VisitingResearcher.class, (instructor) -> _toDto((VisitingResearcher) instructor));
+    }};
 
-    @Named(value = "toInstructorDto")
-    default InstructorDto toInstructorDto(Instructor instructor) {
-        if (instructor instanceof PermanentInstructor)
-            return PermanentInstructorMapper.INSTANCE.toPermanentInstructorDto((PermanentInstructor) instructor);
-        else if (instructor instanceof VisitingResearcher)
-            return VisitingResearcherMapper.INSTANCE.toVisitingResearcherDto((VisitingResearcher) instructor);
-        return InstructorMapper.INSTANCE.instructorToInstructorDto(instructor);
+    @Named(value = "toDto")
+    public InstructorDto toDto(Instructor instructor) {
+        if (instructor == null) return null;
+        Function<Instructor, InstructorDto> f = toDtoMap.get(instructor.getClass());
+        if (f == null) return _toDto(instructor);
+        return f.apply(instructor);
     }
 
-    Instructor instructorFromInstructorCreateDto(InstructorCreateDto instructorCreateDto);
+    abstract InstructorDto _toDto(Instructor instructor);
 
-    @Named(value = "fromInstructorCreateDto")
-    default Instructor fromInstructorCreateDto(InstructorCreateDto instructorCreateDto) {
-        if (instructorCreateDto instanceof PermanentInstructorCreateDto)
-            return PermanentInstructorMapper.INSTANCE.fromPermanentInstructorCreateDto((PermanentInstructorCreateDto) instructorCreateDto);
-        else if (instructorCreateDto instanceof VisitingResearcherCreateDto)
-            return VisitingResearcherMapper.INSTANCE.fromVisitingResearcherCreateDto((VisitingResearcherCreateDto) instructorCreateDto);
-        return InstructorMapper.INSTANCE.instructorFromInstructorCreateDto(instructorCreateDto);
+    abstract PermanentInstructorDto _toDto(PermanentInstructor instructor);
+
+    abstract VisitingResearcherDto _toDto(VisitingResearcher instructor);
+    //endregion
+
+    //region fromCreateDto
+    private Map<Class<?>, Function<InstructorCreateDto, Instructor>> fromCreateDtoMap = new HashMap<Class<?>, Function<InstructorCreateDto, Instructor>>() {{
+        put(PermanentInstructorCreateDto.class, (dto) -> _fromCreateDto((PermanentInstructorCreateDto) dto));
+        put(VisitingResearcherCreateDto.class, (dto) -> _fromCreateDto((VisitingResearcherCreateDto) dto));
+    }};
+
+    public Instructor fromCreateDto(InstructorCreateDto dto) {
+        if (dto == null) return null;
+        Function<InstructorCreateDto, Instructor> f = fromCreateDtoMap.get(dto.getClass());
+        if (f == null) return _fromCreateDto(dto);
+        return f.apply(dto);
     }
 
-    Instructor instructorFromInstructorUpdateDto(InstructorUpdateDto instructorUpdateDto);
+    abstract Instructor _fromCreateDto(InstructorCreateDto dto);
 
-    @Named(value = "fromInstructorUpdateDto")
-    default Instructor fromInstructorUpdateDto(InstructorUpdateDto instructorUpdateDto) {
-        if (instructorUpdateDto instanceof PermanentInstructorUpdateDto)
-            return PermanentInstructorMapper.INSTANCE.fromPermanentInstructorUpdateDto((PermanentInstructorUpdateDto) instructorUpdateDto);
-        else if (instructorUpdateDto instanceof VisitingResearcherUpdateDto)
-            return VisitingResearcherMapper.INSTANCE.fromVisitingResearcherUpdateDto((VisitingResearcherUpdateDto) instructorUpdateDto);
-        return InstructorMapper.INSTANCE.instructorFromInstructorUpdateDto(instructorUpdateDto);
+    abstract PermanentInstructor _fromCreateDto(PermanentInstructorCreateDto dto);
+
+    abstract VisitingResearcher _fromCreateDto(VisitingResearcherCreateDto dto);
+    //endregion
+
+    //region fromUpdateDto
+    private Map<Class<?>, Function<InstructorUpdateDto, Instructor>> fromUpdateDtoMap = new HashMap<Class<?>, Function<InstructorUpdateDto, Instructor>>() {{
+        put(PermanentInstructorUpdateDto.class, (dto) -> _fromUpdateDto((PermanentInstructorUpdateDto) dto));
+        put(VisitingResearcherUpdateDto.class, (dto) -> _fromUpdateDto((VisitingResearcherUpdateDto) dto));
+    }};
+
+    public Instructor fromUpdateDto(InstructorUpdateDto dto) {
+        if (dto == null) return null;
+        Function<InstructorUpdateDto, Instructor> f = fromUpdateDtoMap.get(dto.getClass());
+        if (f == null) return _fromUpdateDto(dto);
+        return f.apply(dto);
     }
 
-    void instructorUpdateFromInstructorUpdateDto(InstructorUpdateDto instructorUpdateDto, @MappingTarget Instructor instructor);
+    abstract Instructor _fromUpdateDto(InstructorUpdateDto dto);
 
-    @Named(value = "updateFromInstructorUpdateDto")
-    default void updateFromInstructorUpdateDto(InstructorUpdateDto instructorUpdateDto, @MappingTarget Instructor instructor) {
-        if (instructorUpdateDto instanceof PermanentInstructorUpdateDto)
-            PermanentInstructorMapper.INSTANCE.updateFromPermanentInstructorUpdateDto((PermanentInstructorUpdateDto) instructorUpdateDto, (PermanentInstructor) instructor);
-        else if (instructorUpdateDto instanceof VisitingResearcherUpdateDto)
-            VisitingResearcherMapper.INSTANCE.updateFromVisitingResearcherUpdateDto((VisitingResearcherUpdateDto) instructorUpdateDto, (VisitingResearcher) instructor);
-        else
-            InstructorMapper.INSTANCE.instructorUpdateFromInstructorUpdateDto(instructorUpdateDto, instructor);
+    abstract PermanentInstructor _fromUpdateDto(PermanentInstructorUpdateDto dto);
+
+    abstract VisitingResearcher _fromUpdateDto(VisitingResearcherUpdateDto dto);
+    //endregion
+
+
+    //region updateFromUpdateDto
+    private Map<Class<?>, BiConsumer<InstructorUpdateDto, Instructor>> updateFromUpdateDtoMap = new HashMap<Class<?>, BiConsumer<InstructorUpdateDto, Instructor>>() {{
+        put(PermanentInstructorUpdateDto.class, (dto, instructor) -> _updateFromUpdateDto((PermanentInstructorUpdateDto) dto, (PermanentInstructor) instructor));
+        put(VisitingResearcherUpdateDto.class, (dto, instructor) -> _updateFromUpdateDto((VisitingResearcherUpdateDto) dto, (VisitingResearcher) instructor));
+    }};
+
+    public void updateFromUpdateDto(InstructorUpdateDto dto, @MappingTarget Instructor instructor) {
+        if (dto == null) return;
+        BiConsumer<InstructorUpdateDto, Instructor> f = updateFromUpdateDtoMap.get(dto.getClass());
+        if (f == null) _updateFromUpdateDto(dto, instructor);
+        else f.accept(dto, instructor);
     }
+
+    abstract void _updateFromUpdateDto(InstructorUpdateDto dto, @MappingTarget Instructor instructor);
+
+    abstract void _updateFromUpdateDto(PermanentInstructorUpdateDto dto, @MappingTarget PermanentInstructor instructor);
+
+    abstract void _updateFromUpdateDto(VisitingResearcherUpdateDto dto, @MappingTarget VisitingResearcher instructor);
+    //endregion
 
 }

@@ -57,15 +57,15 @@ class InstructorManager implements InstructorService {
 
         if (sort != null) {
             JpaRepository<? extends Instructor, Long> repo = getRepositoryForSort(criteria.getSort());
-            return InstructorMapper.INSTANCE.toInstructorDtoList(pageRequest == null ? repo.findAll(sort) : repo.findAll(pageRequest.withSort(sort)).getContent());
+            return InstructorMapper.INSTANCE.toDtoList(pageRequest == null ? repo.findAll(sort) : repo.findAll(pageRequest.withSort(sort)).getContent());
         }
 
-        return InstructorMapper.INSTANCE.toInstructorDtoList(pageRequest == null ? repository.findAll(spec) : repository.findAll(spec, pageRequest).getContent());
+        return InstructorMapper.INSTANCE.toDtoList(pageRequest == null ? repository.findAll(spec) : repository.findAll(spec, pageRequest).getContent());
     }
 
     @Override
     public InstructorDto findById(Long id) {
-        return InstructorMapper.INSTANCE.toInstructorDto(repository.findById(id).orElse(null));
+        return InstructorMapper.INSTANCE.toDto(repository.findById(id).orElse(null));
     }
 
     @Override
@@ -80,8 +80,8 @@ class InstructorManager implements InstructorService {
         // Check if 'phoneNumber' is unique
         validatePhoneNumberIsUnique(instructorCreateDto.getPhoneNumber());
 
-        Instructor instructor = InstructorMapper.INSTANCE.fromInstructorCreateDto(instructorCreateDto);
-        return InstructorMapper.INSTANCE.toInstructorDto(repository.save(instructor));
+        Instructor instructor = InstructorMapper.INSTANCE.fromCreateDto(instructorCreateDto);
+        return InstructorMapper.INSTANCE.toDto(repository.save(instructor));
     }
 
     @Transactional
@@ -95,14 +95,14 @@ class InstructorManager implements InstructorService {
             throw new EntityNotExistsException("Instructor", Pair.of("id", instructorUpdateDto.getId()));
 
         // Check if existing entity type equals type of entity to update.
-        Instructor instructor = InstructorMapper.INSTANCE.fromInstructorUpdateDto(instructorUpdateDto);
+        Instructor instructor = InstructorMapper.INSTANCE.fromUpdateDto(instructorUpdateDto);
         if (!instructor.getClass().equals(existsInstructor.getClass()))
             throw new InvalidEntityTypeException(existsInstructor.getClass().getSimpleName());
 
         // Check if 'phoneNumber' is unique for update
         validatePhoneNumberIsUnique(instructorUpdateDto.getPhoneNumber(), existsInstructor.getId());
 
-        InstructorMapper.INSTANCE.updateFromInstructorUpdateDto(instructorUpdateDto, existsInstructor);
+        InstructorMapper.INSTANCE.updateFromUpdateDto(instructorUpdateDto, existsInstructor);
         repository.save(existsInstructor);
     }
 
