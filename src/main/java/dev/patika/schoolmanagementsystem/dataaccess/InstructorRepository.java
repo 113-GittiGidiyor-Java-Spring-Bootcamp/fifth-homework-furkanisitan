@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface InstructorRepository extends JpaRepository<Instructor, Long>, JpaSpecificationExecutor<Instructor> {
+public interface InstructorRepository<T extends Instructor> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T> {
 
-    List<Instructor> findAllByName(String name);
+    List<T> findAllByName(String name);
 
-    Instructor getByPhoneNumber(String phneNumber);
+    T getByPhoneNumber(String phneNumber);
 
     boolean existsByPhoneNumber(String phoneNumber);
 

@@ -34,12 +34,12 @@ import java.util.Objects;
 @Service
 class InstructorManager implements InstructorService {
 
-    private final InstructorRepository repository;
+    private final InstructorRepository<Instructor> repository;
     private final PermanentInstructorRepository permanentInstructorRepository;
     private final VisitingResearcherRepository visitingResearcherRepository;
 
     @Autowired
-    public InstructorManager(InstructorRepository repository, PermanentInstructorRepository permanentInstructorRepository, VisitingResearcherRepository visitingResearcherRepository) {
+    public InstructorManager(InstructorRepository<Instructor> repository, PermanentInstructorRepository permanentInstructorRepository, VisitingResearcherRepository visitingResearcherRepository) {
         this.repository = repository;
         this.permanentInstructorRepository = permanentInstructorRepository;
         this.visitingResearcherRepository = visitingResearcherRepository;
