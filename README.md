@@ -8,6 +8,32 @@ An example REST API with Spring Boot
 
 - applicationUrl: `http://localhost:8080`
 
+## Requirements
+
+* [JDK 8+](https://www.oracle.com/java/technologies/javase-downloads.html)
+
+## Steps to Setup
+
+**1. Clone the application**
+
+```bash
+git clone https://github.com/113-GittiGidiyor-Java-Spring-Bootcamp/fifth-homework-furkanisitan.git
+```
+
+**2. Navigate to the root folder of the project and run the following command.**
+
+MacOS/Linux:
+```bash
+./mvnw spring-boot:run
+```
+
+Windows:
+```bash
+mvnw spring-boot:run
+```
+
+The app will start running at `http://localhost:8080`
+
 ## Filtering
 
 In this API, some endpoints support an optional `filter` parameter. 
@@ -67,6 +93,10 @@ A wrong format for the filter parameter, an incorrect field or operator componen
 * [Update Instructor](doc/api/instructor/update-instructor.md) : `PUT /api/instructors/:id`
 * [Delete Instructor](doc/api/instructor/delete-instructor.md) : `DELETE /api/instructors/:id`
 * [Delete All Instructors by Name](doc/api/instructor/delete-all-instructors-by-name.md) : `DELETE /api/instructors`
+* [Update FixedSalary of PermanentInstructor](doc/api/instructor/update-fixed-salary-of-permanent-instructor.md) : `PUT /api/instructors/permanent-instructors/:id/fixed-salary/:percent`
+* [Show All FixedSalary History of PermanentInstructor](doc/api/instructor/show-fixed-salary-history-of-permanent-instructor.md) : `GET /api/instructors/permanent-instructors/:id/fixed-salary/history`
+* [Update HourlySalary of VisitingResearcher](doc/api/instructor/update-hourly-salary-of-visiting-researcher.md) : `PUT /api/instructors/visiting-researchers/:id/hourly-salary/:percent`
+* [Show All HourlySalary History of VisitingResearcher](doc/api/instructor/show-hourly-salary-history-of-visiting-researcher.md) : `GET /api/instructors/visiting-researchers/:id/hourly-salary/history`
 
 ### Student related
 
